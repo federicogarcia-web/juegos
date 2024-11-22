@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de palabras</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <style>
+        /* Agrega los estilos necesarios aquí si los tienes en styles.css */
+    </style>
+</head>
+
+<body>
+    <!-- Pantalla de Bienvenida -->
+    <div id="bienvenida">
+        <h1>¡Bienvenido al Juego de palabras!</h1>
+        <p>Por favor, ingresa tu nombre para comenzar:</p>
+        <input type="text" id="nombreUsuario" placeholder="Introduce tu nombre" />
+        <button onclick="guardarNombre()">Iniciar</button>
+    </div>
+
+    <!-- Pantalla de Juego -->
+    <div id="juego">
+        <h1>Juego de palabras</h1>
+        <div id="mensajeBienvenida"></div>
+
+        <div>
+            <label for="tema">Selecciona un tema:</label>
+            <select id="tema">
+                <option value="animales">Animales</option>
+                <option value="ciudades">Ciudades</option>
+                <option value="departamentos">Departamentos de Colombia</option>
+                <option value="idiomas">Idiomas</option>
+                <option value="colores">Colores</option>
+                <option value="volcanes">Volcanes</option> <!-- Agregado el tema de volcanes -->
+            </select>
+
+            <label for="nivel">Selecciona el nivel:</label>
+            <select id="nivel">
+                <option value="facil">Fácil</option>
+                <option value="medio">Medio</option>
+                <option value="dificil">Difícil</option>
+            </select>
+
+            <button id="botonIniciar" onclick="iniciarJuego()">Iniciar</button>
+        </div>
+
+        <div id="palabra" style="font-size: 24px; margin-top: 20px;"></div>
+        <div id="intentos"></div>
+        <input type="text" id="inputLetra" maxlength="1" placeholder="Introduce una letra" />
+        <button onclick="adivinarLetra()">Adivinar</button>
+        <div id="resultado"></div>
+        <button id="reiniciar" style="display: none;" onclick="reiniciarJuego()">Reiniciar</button>
+
+        <img id="muñeco" src="" alt="" />
+        <img id="gifResultado" src="" alt="Resultado del Juego" style="display: none;" />
+
+        <!-- Gif de celebración que cubre toda la pantalla -->
+        <img id="gifCelebracion" src="img/celebracion.webp" alt="¡Felicidades!" style="display: none;" />
+
+        <div class="footer">Developer Edison Urrego</div>
+    </div>
+
+    <script>
+        // Temas y palabras por nivel de dificultad
+        const temas = {
+            "animales": {
+                "facil": ["GATO", "PERRO", "VACA", "LORO", "FOCA"],
+                "medio": ["ELEFANTE", "JIRAFA", "DROMEDARIO", "CANGURO", "CROCIS"],
+                "dificil": ["HIPOPOTAMO", "GUEPARDO", "CAMELLO", "CABALLO", "ESQUIMAL"]
+            },
+            "ciudades": {
+                "facil": ["BOGOTA", "MEDELLIN", "CALI", "BARRANQUILLA", "BUCARAMANGA"],
+                "medio": ["CARTAGENA", "MANIZALES", "PEREIRA", "ARMENIA", "CALI"],
+                "dificil": ["SANANDRES", "BARRANQUILLA", "QUINDIO", "CALDAS", "RISARALDA"]
+            },
+            "departamentos": {
+                "facil": ["ANTIOQUIA", "MAGDALENA", "SANTANDER", "ATLANTICO", "NARIÑO"],
+                "medio": ["BOYACA", "CASANARE", "PUTUMAYO", "CALDAS", "TOLIMA"],
+                "dificil": ["CESAR", "NARIÑO", "CUNDINAMARCA", "VALLE", "COLOMBIA"]
+            },
+            "idiomas": {
+                "facil": ["ESPANOL", "INGLES", "PORTUGUES", "FRANCES", "ALEMAN"],
+                "medio": ["ITALIANO", "CHINO", "ARABE", "JAPONES", "COREANO"],
+                "dificil": ["SWAHILI", "JAPONES", "TAMIL", "HINDI", "KORO"]
+            },
+            "colores": {
+                "facil": ["ROJO", "AZUL", "AMARILLO", "NEGRO", "BLANCO"],
+                "medio": ["NARANJA", "MORADO", "PINK", "VERDE", "CIELO"],
+                "dificil": ["SALMON", "CARMESI", "MARINO", "LIMA", "ROSA"]
+            },
+            "volcanes": {
+                "facil": ["PURACE", "CERROBRAVO", "GALERAS", "DOÑAJUANA", "TOTUMOS"],
+                "medio": ["NEVADODELRUIZ", "CUMBAL", "NEVADODEHSANTAROSA", "AZUFRE", "TOLIMA"],
+                "dificil": ["MACHIN", "NEVADODELHUILA", "CHILES", "PASTO", "SOTARA"]
+            }
+        };
+
+        // Variables del juego
+        let palabraAdivinar = "";
+        let palabraGuiones = "";
+        let intentos = 6;
+        let letrasAdivinadas = [];
+        let nombreUsuario = "";
+        let temaSeleccionado = "";
+        let nivelSeleccionado = "";
+        let gifsVictoria = [
+            "img/aplausos.gif",
+            "img/bien_hecho.gif",
+            "img/minius.webp"
+        ];
+
+        let gifsDerrota = [
+            "img/casi_acert.gif",
+            "img/no-no-no.gif",
+            "img/no_acert.gif"
+        ];
+
+        function guardarNombre() {
+            nombreUsuario = document.getElementById("nombreUsuario").value;
+            if (nombreUsuario) {
+                document.getElementById("bienvenida").style.display = "none";
+                document.getElementById("juego").style.display = "block";
+                document.getElementById("mensajeBienvenida").innerHTML = `¡Hola, ${nombreUsuario}! ¿Listo para jugar?`;
+            }
+        }
+
+        function iniciarJuego() {
+            temaSeleccionado = document.getElementById("tema").value;
+            nivelSeleccionado = document.getElementById("nivel").value;
+            const palabrasPorTema = temas[temaSeleccionado][nivelSeleccionado];
+            palabraAdivinar = palabrasPorTema[Math.floor(Math.random() * palabrasPorTema.length)];
+
+            palabraGuiones = palabraAdivinar.split("").map(() => "_").join(" ");
+            document.getElementById("palabra").innerText = palabraGuiones;
+            document.getElementById("intentos").innerText = `Tienes ${intentos} intentos restantes`;
+            letrasAdivinadas = [];
+            document.getElementById("inputLetra").value = "";
+            document.getElementById("resultado").textContent = "";
+            document.getElementById("reiniciar").style.display = "none";
+            document.getElementById("gifCelebracion").style.display = "none"; // Ocultar gif de celebración
+        }
+
+        function adivinarLetra() {
+            const letra = document.getElementById("inputLetra").value.toUpperCase();
+            if (letra && !letrasAdivinadas.includes(letra)) {
+                letrasAdivinadas.push(letra);
+                let gifAleatorio;
+                if (palabraAdivinar.includes(letra)) {
+                    palabraGuiones = palabraAdivinar.split("").map(c => letrasAdivinadas.includes(c) ? c : "_").join(" ");
+                    document.getElementById("palabra").innerText = palabraGuiones;
+                    // Mostrar gif de victoria temporal
+                    gifAleatorio = obtenerGifAleatorio(gifsVictoria);
+                    mostrarGif(gifAleatorio);
+                } else {
+                    intentos--;
+                    document.getElementById("intentos").innerText = `Tienes ${intentos} intentos restantes`;
+                    // Mostrar gif de derrota temporal
+                    gifAleatorio = obtenerGifAleatorio(gifsDerrota);
+                    mostrarGif(gifAleatorio);
+                }
+                document.getElementById("inputLetra").value = "";
+
+                if (!palabraGuiones.includes("_")) {
+                    gameOver(true);
+                } else if (intentos === 0) {
+                    gameOver(false);
+                }
+            }
+        }
+
+        function gameOver(ganado) {
+            let gifAleatorio;
+            if (ganado) {
+                document.getElementById("resultado").textContent = `¡Felicidades, ${nombreUsuario}! Adivinaste la palabra.`;
+                gifAleatorio = obtenerGifAleatorio(gifsVictoria);
+                mostrarGif(gifAleatorio);
+
+                // Mostrar gif de celebración
+                document.getElementById("gifCelebracion").style.display = "block";
+
+                // Ocultar gif de celebración después de 4 segundos (puedes ajustar el tiempo)
+                setTimeout(() => {
+                    document.getElementById("gifCelebracion").style.display = "none";
+                    reiniciarJuego(); // Iniciar un nuevo juego después de ocultar el gif
+                }, 4000); // El gif se muestra por 4 segundos
+            } else {
+                document.getElementById("resultado").textContent = `Perdiste. La palabra era ${palabraAdivinar}.`;
+                gifAleatorio = obtenerGifAleatorio(gifsDerrota);
+                mostrarGif(gifAleatorio);
+                document.getElementById("reiniciar").style.display = "block";
+            }
+        }
+
+        function mostrarGif(gif) {
+            document.getElementById("gifResultado").src = gif;
+            document.getElementById("gifResultado").style.display = "block";
+            setTimeout(() => {
+                document.getElementById("gifResultado").style.display = "none";
+            }, 2000); // El gif se oculta después de 2 segundos
+        }
+
+        function obtenerGifAleatorio(array) {
+            return array[Math.floor(Math.random() * array.length)];
+        }
+
+        function reiniciarJuego() {
+            intentos = 6; // Restablecer el contador de intentos
+            document.getElementById("intentos").innerText = `Tienes ${intentos} intentos restantes`; // Actualizar el texto en la interfaz
+            document.getElementById("gifResultado").style.display = "none";
+            iniciarJuego(); // Reiniciar el juego
+        }
+    </script>
+</body>
+
+</html>

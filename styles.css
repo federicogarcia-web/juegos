@@ -1,0 +1,201 @@
+body {
+    font-family: Arial, sans-serif;
+    color: #FFF;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    height: 100vh;
+    background-image: url('/img/FOND.jpg');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+/* Estilo para la página de bienvenida */
+#bienvenida {
+    font-size: 1.5em;
+    text-align: center;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 10px;
+    max-width: 90%;
+    margin: auto;
+}
+
+#bienvenida h1 {
+    font-size: 2em;
+    margin-bottom: 10px;
+}
+
+#bienvenida input {
+    padding: 12px;
+    font-size: 1.2em;
+    margin-top: 10px;
+    border-radius: 5px;
+    width: 80%;
+    max-width: 300px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+#bienvenida button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 1.2em;
+    cursor: pointer;
+    background-color: #3df019;
+    border: none;
+    color: white;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+#bienvenida button:hover {
+    background-color: #232421;
+}
+
+#bienvenida button:active {
+    background-color: #e92d0c;
+}
+
+/* Estilo para la página de juego */
+#juego {
+    display: none;
+    padding: 20px;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 10px;
+    max-width: 90%;
+    margin: auto;
+    color: white;
+}
+
+#palabra {
+    font-size: 2em;
+    margin-top: 20px;
+}
+
+#intentos {
+    font-size: 1.2em;
+}
+
+input[type="text"] {
+    font-size: 1.5em;
+    padding: 10px;
+    margin: 10px;
+    width: 80%;
+    max-width: 200px;
+}
+
+button {
+    background-color: #3df019;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1.2em;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background-color: #232421;
+    transform: scale(1.1);
+}
+
+button:active {
+    background-color: #e92d0c;
+}
+
+/* Estilo para el gif de celebración */
+#gifCelebracion {
+    position: fixed;   /* Posicionamiento fijo para cubrir toda la pantalla */
+    top: 0;            /* Empieza desde la parte superior de la pantalla */
+    left: 0;           /* Empieza desde la parte izquierda */
+    width: 100vw;      /* Ocupa todo el ancho de la ventana */
+    height: 100vh;     /* Ocupa toda la altura de la ventana */
+    z-index: -1;       /* Coloca el gif detrás de otros elementos */
+    object-fit: cover; /* Ajusta la imagen para cubrir todo el espacio */
+    display: none;     /* Inicialmente oculto */
+}
+
+
+/* Resposividad para pantallas pequeñas */
+@media (max-width: 600px) {
+    #bienvenida {
+        font-size: 1.2em;
+    }
+
+    #bienvenida input {
+        font-size: 1em;
+        width: 90%;
+    }
+
+    #bienvenida button {
+        font-size: 1em;
+        padding: 8px 16px;
+    }
+
+    #palabra {
+        font-size: 1.5em;
+    }
+
+    #intentos {
+        font-size: 1.1em;
+    }
+
+    input[type="text"] {
+        font-size: 1.2em;
+        width: 90%;
+    }
+
+    button {
+        font-size: 1em;
+        padding: 8px 16px;
+    }
+}
+
+.footer {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    font-family: 'Pacifico', cursive;
+    font-size: 18px;
+    color: #fff;
+    letter-spacing: 5px;
+}
+
+/* Fondo de celebración */
+#celebracion {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7); /* Fondo semitransparente */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* Asegura que quede encima de todo */
+}
+
+#celebracion img {
+    max-width: 80%;
+    max-height: 80%;
+    animation: fade-in 1.5s ease-in-out;
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
